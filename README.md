@@ -1,7 +1,7 @@
 # Foldlight Studio
 
 A browser tool for designing folded, textured and pierced lampshades and exporting them for 3D printing.
-Live at **https://lamp.huescript.com**.
+Live at **https://lamp.huescript.com** (main site, Cloudflare) and **https://rahuls190.github.io/Fold/** (GitHub Pages copy of this repo).
 
 ## What it does
 - **Shape**: draw the shade profile, stack several sections, match rims between sections.
@@ -14,6 +14,7 @@ Live at **https://lamp.huescript.com**.
 | --- | --- |
 | `src/` | Source: `index.html`, `style.css`, and the scripts (`engine.js` geometry, `checks.js` print checks, `app.js` editor, `ui.js` step flow, `fitting.js` bulbs and bases, `joints.js`, `vase-*.js`, `export-3mf.js`) |
 | `dist/` | Built static site, the folder that is deployed |
+| `index.html` | Forwards the GitHub Pages root to `dist/` |
 | `build.py` | Copies `src/` + `three.min.js` into `dist/`, and writes `artifact.html` (single-file version) |
 | `three.min.js` | three.js r160 |
 | `CHANGES.md` | Detailed change log |

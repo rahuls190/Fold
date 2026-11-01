@@ -1,0 +1,113 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Foldlight Studio</title><link rel="stylesheet" href="style.css?v=claude-4"></head><body>
+<header class="top"><a class="brand" href="#"><span class="brandmark">⋈</span> foldlight<span class="studio">STUDIO</span></a><div class="projecttitle"><input id="projectName" aria-label="Project name" maxlength="80" value="Untitled collection"><span id="saveStatus">Saved on this device</span></div><div class="headtools"><label class="advswitch" title="Show every expert setting"><input type="checkbox" id="advToggle"><span class="track"></span><span class="advtext">Advanced</span></label><button id="undo" class="icon" title="Undo (Ctrl Z)" aria-label="Undo">↶</button><button id="redo" class="icon" title="Redo (Ctrl Shift Z)" aria-label="Redo">↷</button><button id="projectsBtn">Projects</button><button id="saveBtn">Save</button><button class="primary" id="exportBtn">Export</button></div></header>
+<main class="app">
+<section class="stage">
+ <div class="viewport" id="viewport">
+  <canvas id="canvas" aria-label="Interactive 3D lampshade preview"></canvas>
+  <div class="stack" aria-label="Sections"><span class="stacklabel">Sections</span><div id="partList"></div><button id="addPart" class="stackadd" title="Stack a new section on top" aria-label="Add a section on top">＋</button></div>
+  <button class="pill" id="checkPill" title="Print check"><span class="dot"></span><span id="pillText">Checking…</span></button>
+  <h1 id="partTitle" class="gone"></h1><span class="gone" id="solidBadge"></span>
+  <div class="viewerror" id="viewerror" hidden></div>
+  <div class="viewbottom">
+   <div class="readout"><span id="dimensions">—</span><span id="weight">—</span><span class="adv" id="triangles">—</span><span class="adv" id="stackHeight"></span></div>
+   <div class="viewtools">
+    <div class="viewbuttons" id="modeButtons"><button class="active" id="viewPart">Part</button><button id="viewAssembly">Stack</button><button id="viewExploded">Exploded</button></div>
+    <div class="viewbuttons"><button id="fit" title="Fit the model in view">Fit</button><button id="wire" title="Show mesh edges">Edges</button><button id="gridBtn" title="Show or hide the floor grid" aria-pressed="true">Grid</button><button id="baseBtn" class="gone" aria-pressed="false">Base</button><select id="envSel" aria-label="Lighting environment" title="Lighting"></select><button id="light" title="Preview the shade lit from inside">Light on</button></div>
+   </div>
+  </div>
+  <div class="axislabel">Drag to orbit · scroll to zoom</div>
+ </div>
+</section>
+<aside class="panel" id="panel">
+ <div class="panelhead">
+  <nav class="steps" aria-label="Design steps"><button data-tab="shape" class="active"><i>1</i>Shape</button><button data-tab="pattern"><i>2</i>Pattern</button><button data-tab="mount"><i>3</i>Fitting</button><button data-tab="print"><i>4</i>Export</button></nav>
+ </div>
+
+ <div id="shape" class="tabcontent">
+  <p class="lead">Pick a starting shape, then drag the points to change the silhouette of the selected section.</p>
+  <div class="group sectionsgroup"><div class="grouphead">Sections <span id="partCount"></span></div>
+   <p class="small">One section is one printed part. Stack several into a taller lamp; the rims are matched for you.</p>
+   <button class="wide" id="addSection2">＋ Add a section on top</button>
+   <div id="multiTools"><div class="btnrow"><button id="duplicate">Duplicate</button><button id="remove">Remove</button><button id="moveUp">Move up</button><button id="moveDown">Move down</button></div>
+   <button class="wide" id="matchBelow">Match rim to section below</button>
+   <button class="wide" id="matchAll">Match all section rims</button>
+   <div class="jointcard adv"><label class="gridtoggle"><input type="checkbox" id="jointsOn"> Joint sleeves</label><p class="small">A ring that slides inside both sections at each matched joint, so they align and do not turn.</p><div class="jointfields"><label>Depth<input type="number" id="jointDepth" min="5" max="40" step="1" title="Insertion depth into each section, mm"></label><label>Wall<input type="number" id="jointWall" min="0.8" max="4" step="0.1" title="Sleeve wall thickness, mm"></label><label>Gap<input type="number" id="jointClear" min="0" max="1.5" step="0.05" title="Clearance to the shade wall, mm"></label></div></div>
+   </div><button id="addVase" class="gone">New vase</button>
+  </div>
+  <div id="presetList" class="presetgrid"></div>
+  <button id="towerPreset" class="gone">Build a floor lamp</button>
+  <label class="gone">Start from a preset<select id="presetSelect"><option value="">Choose a starting shape…</option><option value="reference">Reverse-fold shade</option><option value="drum">Pleated drum</option><option value="cone">Tapered shade</option><option value="hourglass">Hourglass</option><option value="globe">Lantern</option><option value="tower">Floor lamp assembly</option></select></label>
+  <div id="heightControl"></div>
+  <div class="profilecard">
+   <div class="profileheading"><b>Silhouette</b><label class="gridtoggle adv"><input id="profileGrid" type="checkbox" checked> Grid</label><button id="addPoint" class="mini">＋ Point</button></div>
+   <svg id="profile" viewBox="0 0 280 240" role="img" aria-label="Profile editor"></svg>
+   <div class="small" id="profileHint">Drag a point to reshape.</div>
+  </div>
+  <label class="field" id="curveField">Profile line<select id="profileCurve"><option value="linear">Straight between points</option><option value="smooth">Smooth curve through points</option></select></label>
+  <div id="bodyTools" hidden></div>
+  <div class="adv pointtable"><div class="pointhead"><span>Height %</span><span>Diameter</span><span></span></div><div id="profilePoints"></div></div>
+  <div class="note adv" id="profileNote">For reverse folds, each interior point creates a zigzag crease. Use Flip beside a point to reverse only that zigzag.</div>
+  <div class="field"><span class="label">Colour</span><div class="swatches" id="swatches"></div><input id="colour" type="color" aria-label="Custom preview colour"></div>
+  <label class="field adv">Section name<input id="partName" maxlength="80"></label>
+  <label class="gone">Design workflow<select id="workflow"><option value="fold">Folds / origami</option><option value="vase">Vase / shade designer</option></select></label>
+  <button class="next" data-next="pattern">Next: Pattern →</button>
+ </div>
+
+ <div id="pattern" class="tabcontent" hidden>
+  <div id="patternSummary" class="patsum"></div>
+  <div id="patternPicker" class="picker" hidden></div>
+  <div id="patternBody">
+   <div id="vesselPanel" hidden></div>
+   <div id="foldPanel">
+    <label class="gone">Surface pattern<select id="patternType"><option value="reverse">Reverse folds · zigzag crease</option><option value="pleats">Sharp pleats</option><option value="flutes">Soft flutes</option><option value="ripple">Rounded ribs</option><option value="none">Plain surface</option></select></label>
+    <div id="patternControls"></div>
+    <button id="straightPanels" class="wide"></button><p id="panelNote" class="note adv" hidden></p>
+    <button class="wide adv" id="squareFit" hidden>Make tiles square (fit repeats to rows)</button>
+    <div class="note" id="patternNote"></div>
+    <a id="patternSource" class="adv" target="_blank" rel="noopener">Read the source research ↗</a>
+    <div class="gone"><div id="patternGallery"></div></div>
+   </div>
+  </div>
+  <button class="next" data-next="mount">Next: Fitting →</button>
+ </div>
+
+ <div id="mount" class="tabcontent" hidden>
+  <p class="lead">Choose the lamp fitting and bulb to check the size, then fine-tune the mounting plate.</p>
+  <div class="group fitgroup"><div class="grouphead">Light fitting</div>
+   <label class="field">Fitting<select id="fitSel"></select></label>
+   <label class="field">Bulb<select id="bulbSel"></select></label>
+   <div class="fittoggles"><label class="gridtoggle"><input type="checkbox" id="fitShow" checked> Show bulb and socket in 3D</label><label class="gridtoggle"><input type="checkbox" id="xrayShow" checked> See-through shade</label><label class="gridtoggle" id="standField"><input type="checkbox" id="standShow"> Show base or cord</label></div>
+   <div id="fitInfo" class="fitinfo"></div>
+  </div>
+  <div class="group"><div class="grouphead">Mounting</div>
+   <div id="mountCards" class="mountcards"></div>
+   <label class="gone">Mounting detail<select id="mountType"><option value="none">Open at both ends</option><option value="bottom">Bottom mounting plate</option><option value="top">Top mounting plate</option></select></label>
+   <label class="gridtoggle" id="noHoleField"><input type="checkbox" id="noHole"> Solid plate, no hole</label>
+   <div id="mountControls"></div>
+   <div class="note adv">The plate is joined to the shade as one closed solid. Hole diameter is the final model dimension; add clearance for your fitting. Threads, clips and certified electrical hardware are not generated.</div>
+  </div>
+
+  <div class="gone"><label><input type="checkbox" id="baseShow"></label><input type="color" id="baseColour" value="#535b55"><input type="number" id="baseClear" min="0" max="3" step="0.1" value="0.4"><button id="fitBase"></button><p id="baseFitInfo"></p></div>
+  <button class="next" data-next="print">Next: Export →</button>
+ </div>
+
+ <div id="print" class="tabcontent" hidden>
+  <div class="group readiness"><div class="grouphead">Print check <span id="checkSummary"></span></div><div id="checkList"></div><p class="small adv">Checks cover mesh closure, dimensions and likely support needs. They do not certify heat safety or socket fit. Inspect the exported part in your slicer.</p></div>
+  <div class="group"><div class="grouphead">Smooth mesh</div>
+   <label class="field">Subdivision<select id="subSel"><option value="0">Off · as designed</option><option value="1">Smooth ×1 · 4× triangles</option><option value="2">Smooth ×2 · 16× triangles</option></select></label>
+   <label class="field">Edges<select id="subMode"><option value="sharp">Keep folds and crisp edges sharp</option><option value="round">Round everything</option></select></label>
+   <div id="subControls"></div>
+   <p class="small" id="subInfo"></p>
+  </div>
+  <div class="group"><div class="grouphead">Printer</div>
+   <div id="wallControl"></div><div class="note adv" id="wallNote"></div>
+   <div class="twofields"><label class="field">Material<select id="material"><option value="PLA">PLA</option><option value="PETG">PETG</option></select></label><label class="field">Nozzle<select id="nozzle"><option value="0.25">0.25 mm</option><option value="0.4">0.4 mm</option><option value="0.6">0.6 mm</option><option value="0.8">0.8 mm</option></select></label></div>
+   <div class="threefields"><label>Bed X<input id="bedX" type="number" min="50" max="2000"></label><label>Bed Y<input id="bedY" type="number" min="50" max="2000"></label><label>Height<input id="bedZ" type="number" min="50" max="2000"></label></div>
+  </div>
+  <div class="group exportgroup"><button class="primary wide big" id="quickStl">Download STL for printing</button><button class="wide" id="moreExport">More formats · 3MF, OBJ, project file</button><p class="small">Each section downloads as its own file.</p></div>
+ </div>
+</aside>
+</main>
+<dialog id="projectsDialog"><div class="dialoghead"><h2>Your projects</h2><button data-close="projectsDialog" aria-label="Close projects">×</button></div><p class="muted">Saved in this browser. Download a project file to back it up or move to another device.</p><div id="savedProjects"></div><div class="dialogactions"><button id="newProject">New project</button><button id="downloadProject">Download project</button><button id="importProject">Import project</button></div><input type="file" id="projectFile" accept=".json,application/json" hidden></dialog>
+<dialog id="exportDialog"><div class="dialoghead"><h2>Export</h2><button data-close="exportDialog" aria-label="Close export">×</button></div><p id="exportInfo"></p><button class="exportoption" id="stl"><strong>Selected section · STL</strong><span>Closed shell · millimetres · ready for your slicer</span></button><button class="exportoption" id="threeMF"><strong>Selected section · 3MF</strong><span>Millimetres and colour, with the editable Foldlight project inside</span></button><button class="exportoption" id="sleeveExport"><strong>Joint sleeves · STL</strong><span>One STL per joint in a .zip · print upright, no supports</span></button><button class="exportoption" id="obj"><strong>Whole lamp · OBJ</strong><span>All sections stacked in place · for renders and visualisation</span></button><button class="exportoption" id="exportTemplate"><strong>Selected section · template</strong><span>Reuse this shape and its settings in another project</span></button><button class="exportoption" id="exportProject"><strong>Editable project · JSON</strong><span>Every section, pattern and printer setting</span></button></dialog><div id="toast" role="status" hidden></div>
+<script src="three.min.js"></script><script src="vase-engine.js"></script><script src="engine.js?v=claude-4"></script><script src="joints.js?v=claude-4"></script><script src="checks.js?v=claude-4"></script><script src="export-3mf.js"></script><script src="app.js?v=claude-4"></script><script src="vase-ui.js?v=claude-4"></script><script src="ui.js?v=claude-4"></script><script src="fitting.js?v=claude-4"></script></body></html>

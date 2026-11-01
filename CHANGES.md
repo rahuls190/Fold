@@ -220,3 +220,8 @@ Honeycomb, dimples/hobnail, diamond knurl, fish scale, basket weave, brick, diag
 - Loop subdivision with sharp creases kept: "Keep folds and crisp edges sharp" keeps edges sharper than 40° (fine-tune the angle in Advanced); "Round everything" smooths all edges. Rims and mounting-plate zones are never moved, so plates stay flat and stacked rims still match.
 - Capped at 600,000 triangles (the level drops automatically and the panel says so). While dragging a slider or profile point the preview skips smoothing and rebuilds smoothed on release.
 - Tested closed with no self-intersections on folds, pleats, flutes, honeycomb, brick and cracked earth. Voronoi cells with "Keep sharp" can cross itself on thin, steep walls; the print check flags this, and "Round everything" avoids it.
+
+## Touch editing on iPad and phones
+- Silhouette editor: a touch grabs the nearest profile point within about 30 px (12 px with a mouse), so you no longer have to hit the small dot exactly. The point keeps its offset from your finger instead of jumping under it, and the grabbed point is drawn larger in orange while you drag.
+- Holding or dragging on the editor no longer starts Safari's text selection, the magnifier or the copy callout. App labels and buttons can't be selected; text and number fields still can.
+- Points are drawn slightly larger on touch screens.
